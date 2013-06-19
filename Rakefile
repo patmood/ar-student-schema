@@ -3,6 +3,10 @@ require 'rspec/core/rake_task'
 require_relative 'db/config'
 require_relative 'lib/students_importer'
 
+desc "open a db console session"
+task "db:console" do
+  exec "sqlite3 db/ar-students.sqlite3"
+end
 
 desc "create the database"
 task "db:create" do
