@@ -1,11 +1,13 @@
 require_relative '../../db/config'
 
 class Student < ActiveRecord::Base
+  has_many :student_teachers, :foreign_key => :student_id
+  has_many :teachers, :through => :student_teachers
 
   validates :email, :presence => true, :uniqueness => true, :format => { :with => /^.+@.+\..{2,5}$/ , :message => 'Invalid email, bitch'}
   validates :birthday, :presence => true
   validates :age, :numericality => {:greater_than => 5}
-  validates :phone, :presence => true, :format => { :with => /\(\d{3}\).?\d{3}.?\d{4}/ , :message => 'Enter valid phone number'}
+  validates :phone, :presence => true, :format => { :with => /\(?\d{3}\)?.?\d{3}.?\d{4}\s*[x]?\d{4}?/ , :message => 'Enter valid phone number'}
 
 
 

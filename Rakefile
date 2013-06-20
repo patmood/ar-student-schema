@@ -2,6 +2,10 @@ require 'rake'
 require 'rspec/core/rake_task'
 require_relative 'db/config'
 require_relative 'lib/students_importer'
+require_relative 'lib/teachers_importer'
+require_relative 'lib/students_teachers_importer'
+
+
 
 desc "open a db console session"
 task "db:console" do
@@ -18,6 +22,13 @@ task "db:drop" do
   rm_f 'db/ar-students.sqlite3'
 end
 
+desc "drop the database, recreate, populate"
+task "db:reset" do
+  rm_f 'db/ar-students.sqlite3'
+  touch 'db/ar-students.sqlite3'
+  db:populate
+end
+
 desc "migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)."
 task "db:migrate" do
   ActiveRecord::Migrator.migrations_paths << File.dirname(__FILE__) + 'db/migrate'
@@ -30,7 +41,21 @@ end
 desc "populate the test database with sample data"
 task "db:populate" do
   StudentsImporter.import
+  TeachersImporter.import
+  StudentTeacherImporter.import
+
 end
+
+# desc "populate the teachers table"
+# task "db:populateteach" do
+#     9.times do
+#       Teacher.create(
+#       :first_name => Faker::Name.first_name,
+#       :last_name => Faker::Name.last_name,
+#       :phone => Faker::PhoneNumber.phone_number,
+#       :email => Faker::Internet.email)
+#     end
+# end
 
 desc 'Retrieves the current schema version number'
 task "db:version" do
